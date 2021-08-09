@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="569.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screens.accounts.AccountsScreenClientsController">
+   <children>
+      <VBox alignment="CENTER" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_RIGHT" prefHeight="64.0" prefWidth="1330.0" spacing="15.0">
+               <children>
+                  <ComboBox fx:id="clientsCombo" onAction="#getAccounts" prefHeight="34.0" prefWidth="190.0" />
+                  <Label text="العملاء">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets right="50.0" />
+               </padding>
+            </HBox>
+            <HBox spacing="10.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <VBox prefHeight="462.0" prefWidth="892.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox>
+                           <children>
+                              <JFXTextField fx:id="search" focusColor="BLACK" labelFloat="true" onKeyPressed="#search" onKeyReleased="#search" onKeyTyped="#search" prefHeight="25.0" prefWidth="184.0" promptText="Search" />
+                           </children>
+                        </HBox>
+                        <TableView id="patientTable" fx:id="tab" prefHeight="428.0" prefWidth="893.0">
+                           <columns>
+                              <TableColumn fx:id="tabType" editable="false" prefWidth="169.0" text="النوع" />
+                              <TableColumn fx:id="tabAccount" editable="false" prefWidth="169.0" text="الحساب" />
+                              <TableColumn fx:id="tabDate" editable="false" prefWidth="169.0" text="التاريخ" />
+                              <TableColumn fx:id="tabAmount" editable="false" prefWidth="74.0" text="المبلغ" />
+                              <TableColumn fx:id="tabInvoices" editable="false" prefWidth="169.0" text="الفاتورة" />
+                              <TableColumn fx:id="tabId" editable="false" minWidth="0.0" prefWidth="30.0" text="م" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" spacing="10.0" HBox.hgrow="NEVER">
+                     <children>
+                        <GridPane prefHeight="388.0" prefWidth="399.0" vgap="10.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="246.0" minWidth="10.0" prefWidth="246.0" />
+                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="134.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="100.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="116.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="99.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="99.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="99.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="99.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label alignment="CENTER_RIGHT" prefHeight="25.0" text="الرقم التعريفي" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Label id="patientId" fx:id="id" alignment="CENTER" contentDisplay="CENTER" prefHeight="34.0" prefWidth="247.0" text="0" textAlignment="CENTER">
+                                 <font>
+                                    <Font size="26.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="121.0" text="الفاتورة" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="136.0" text="المبلغ" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <TextField id="patientFields" fx:id="amount" prefHeight="34.0" prefWidth="179.0" GridPane.rowIndex="2" />
+                              <Label alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="143.0" text="التاريخ" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="143.0" text="الحساب" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="invoices" prefHeight="39.0" prefWidth="245.0" GridPane.rowIndex="1" />
+                              <ComboBox fx:id="account" prefHeight="36.0" prefWidth="248.0" GridPane.rowIndex="4" />
+                              <JFXDatePicker fx:id="date" prefHeight="34.0" prefWidth="299.0" GridPane.rowIndex="3" />
+                              <Label alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="143.0" text="النوع" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="type" prefHeight="36.0" prefWidth="248.0" GridPane.rowIndex="5" />
+                           </children>
+                        </GridPane>
+                        <HBox alignment="CENTER" spacing="5.0">
+                           <children>
+                              <ProgressIndicator fx:id="progress" prefHeight="42.0" prefWidth="43.0" />
+                              <Button id="patientNew" fx:id="New" mnemonicParsing="false" onAction="#New" prefHeight="42.0" prefWidth="88.0" text="جديد" />
+                              <Button id="patientDelete" fx:id="Delete" mnemonicParsing="false" onAction="#Delete" prefHeight="42.0" prefWidth="88.0" text="حذف" />
+                              <Button id="patientEdite" fx:id="Edite" mnemonicParsing="false" onAction="#Edite" prefHeight="42.0" prefWidth="88.0" text="تعديل" />
+                              <Button id="patientAdd" fx:id="Add" mnemonicParsing="false" onAction="#Add" prefHeight="42.0" prefWidth="88.0" text="اضافة" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>
