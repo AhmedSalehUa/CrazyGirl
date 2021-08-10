@@ -13,7 +13,14 @@ import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -42,6 +49,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
+import org.krysalis.barcode4j.impl.code128.Code128Bean;
+import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import screens.products.assets.Products;
 
 /**
@@ -571,4 +589,46 @@ public class ProductsScreenMainController implements Initializable {
         service.start();
     }
 
+    @FXML
+    private void printBarcode(MouseEvent event) {
+        if (tab.getSelectionModel().getSelectedIndex() == -1) {
+            AlertDialogs.showError("اختار الصنف اولا");
+        } else {
+            try {
+                Products selectedItem = tab.getSelectionModel().getSelectedItem();
+                Code128Bean code128 = new Code128Bean();
+                code128.setHeight(15);
+                code128.setModuleWidth(0.5);
+                code128.setQuietZone(5);
+                code128.doQuietZone(true);
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                BitmapCanvasProvider canvas = new BitmapCanvasProvider(baos, "image/x-png", 100, BufferedImage.TYPE_BYTE_BINARY, false, 0);
+                code128.generateBarcode(canvas, tab.getSelectionModel().getSelectedItem().getBarcode());
+                canvas.finish();
+
+                BufferedImage createImageFromBytes = createImageFromBytes(baos.toByteArray());
+                byte[] f = tab.getSelectionModel().getSelectedItem().getName().getBytes();
+                HashMap hash = new HashMap();
+                hash.put("bar", createImageFromBytes);
+                hash.put("id", Integer.toString(selectedItem.getId()));
+                InputStream a = getClass().getResourceAsStream("/screens/products/reports/barcode.jrxml");
+                JasperDesign design = JRXmlLoader.load(a); 
+                JasperReport jasperreport = JasperCompileManager.compileReport(design);
+                JasperPrint jasperprint = JasperFillManager.fillReport(jasperreport, hash, db.get.getReportCon());
+                JasperViewer.viewReport(jasperprint, false);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        }
+    }
+
+    private BufferedImage createImageFromBytes(byte[] imageData) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
+        try {
+            return ImageIO.read(bais);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -6,36 +6,26 @@
 package carzy.girl;
 
 import assets.classes.AlertDialogs;
-import assets.classes.statics;
 import static assets.classes.statics.*;
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import db.User;
-import db.lite;
 import de.jensd.fx.glyphs.emojione.EmojiOne;
 import de.jensd.fx.glyphs.emojione.EmojiOneView;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -49,8 +39,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
-import javafx.stage.Modality;
-import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -152,6 +140,10 @@ public class LoginController implements Initializable {
                                                 prefs.put(USER_ID, Integer.toString(us.getId()));
                                                 prefs.put(USER_NAME, us.getName());
                                                 prefs.put(USER_ROLE, us.getRole());
+                                                ResultSet rs = db.get.getReportCon().createStatement().executeQuery("select attribute,value from static_values");
+                                            while (rs.next()) {
+                                                prefs.put(rs.getString(1), rs.getString(2));
+                                            }
                                                 logined = true;
                                             }
                                         } catch (Exception ex) {

@@ -18,8 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="569.0" prefWidth="1350.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1" fx:controller="screens.accounts.AccountsScreenProvidersController">
+<AnchorPane id="AnchorPane" prefHeight="569.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screens.accounts.AccountsScreenProvidersController">
    <children>
       <VBox alignment="CENTER" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -43,6 +42,16 @@
                         <HBox>
                            <children>
                               <JFXTextField fx:id="search" focusColor="BLACK" labelFloat="true" onKeyPressed="#search" onKeyReleased="#search" onKeyTyped="#search" prefHeight="25.0" prefWidth="184.0" promptText="Search" />
+                              <Label fx:id="totalAcc" alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="607.0" text="0">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" prefHeight="25.0" text="الاجمالي :   ">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </HBox>
                         <TableView id="patientTable" fx:id="tab" prefHeight="428.0" prefWidth="893.0">

@@ -42,6 +42,16 @@
                         <HBox>
                            <children>
                               <JFXTextField fx:id="search" focusColor="BLACK" labelFloat="true" onKeyPressed="#search" onKeyReleased="#search" onKeyTyped="#search" prefHeight="25.0" prefWidth="184.0" promptText="Search" />
+                              <Label fx:id="totalAcc" alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="607.0" text="0">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" prefHeight="25.0" text="الاجمالي :   ">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </HBox>
                         <TableView id="patientTable" fx:id="tab" prefHeight="428.0" prefWidth="893.0">

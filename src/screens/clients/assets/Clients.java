@@ -72,6 +72,12 @@ public class Clients {
         ps.execute();
         return true;
     }
+     public static boolean AddShort(String name) throws Exception {
+        PreparedStatement ps = db.get.Prepare("INSERT INTO `clients`(`name`) VALUES (?)");
+        ps.setString(1, name);
+        ps.execute();
+        return true;
+    }
 
     public boolean Edite() throws Exception {
         PreparedStatement ps = db.get.Prepare("UPDATE `clients` SET `name`=?,`tele1`=?,`tele2`=? WHERE `id`=?");

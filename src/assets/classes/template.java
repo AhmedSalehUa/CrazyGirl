@@ -5,6 +5,8 @@
  */
 package assets.classes;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -44,28 +46,29 @@ public class template {
         d.add("ALTER TABLE `st_stores` CHANGE `name` `name` VARCHAR(700) NOT NULL;");
 
     }
+    
+//    public boolean Add() throws Exception {PreparedStatement ps = db.get.Prepare("");ps.execute();return true;
+//    }
+//
+//    public boolean Edite() throws Exception {PreparedStatement ps = db.get.Prepare("");ps.execute();return true;
+//    }
+//
+//    public boolean Delete() throws Exception {PreparedStatement ps = db.get.Prepare("");ps.execute();return true;
+//    }
+//
+//    public static ObservableList<> getData() throws Exception {
+//    ObservableList<> data = FXCollections.observableArrayList();
+//        ResultSet rs = db.get.getReportCon().createStatement().executeQuery("");
+//        while(rs.next()){
+//            data.add();
+//        }
+//        return data;
+//    }
+//
+//    public static String getAutoNum() throws Exception {
+//     return db.get.getTableData("SELECT IFNULL(MAX(`id`)+1,1) FROM ``").getValueAt(0, 0).toString();
+//    }
     /*
-    public boolean Add() throws Exception {PreparedStatement ps = db.get.Prepare("");ps.execute();return true;
-    }
-
-    public boolean Edite() throws Exception {PreparedStatement ps = db.get.Prepare("");ps.execute();return true;
-    }
-
-    public boolean Delete() throws Exception {PreparedStatement ps = db.get.Prepare("");ps.execute();return true;
-    }
-
-    public static ObservableList<> getData() throws Exception {
-    ObservableList<> data = FXCollections.observableArrayList();
-        ResultSet rs = db.get.getReportCon().createStatement().executeQuery("");
-        while(rs.next()){
-            data.add();
-        }
-        return data;
-    }
-
-    public static String getAutoNum() throws Exception {
-     return db.get.getTableData("SELECT IFNULL(MAX(`id`)+1,1) FROM ``").getValueAt(0, 0).toString();
-    }
     progress.setVisible(true); 
         Service<Void> service = new Service<Void>() {boolean ok =true;
             @Override

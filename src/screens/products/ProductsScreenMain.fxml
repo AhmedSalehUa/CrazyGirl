@@ -31,6 +31,11 @@
                         <HBox>
                            <children>
                               <JFXTextField fx:id="search" focusColor="BLACK" labelFloat="true" onKeyPressed="#search" onKeyReleased="#search" onKeyTyped="#search" prefHeight="25.0" prefWidth="184.0" promptText="Search" />
+                              <ImageView fitHeight="29.0" fitWidth="50.0" onMouseClicked="#printBarcode" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../assets/icons/icons8_print_80px.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </HBox>
                         <TableView id="patientTable" fx:id="tab" prefHeight="428.0" prefWidth="893.0">

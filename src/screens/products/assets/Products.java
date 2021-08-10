@@ -119,6 +119,38 @@ public class Products {
         return true;
     }
 
+    public static boolean addAmount(int id, String amount) throws Exception {
+        double oldAmount = Double.parseDouble(db.get.getTableData("SELECT `amount` FROM `products` WHERE `id`='" + id + "'").getValueAt(0, 0).toString());
+        oldAmount += Double.parseDouble(amount);
+        PreparedStatement ps = db.get.Prepare("UPDATE `products` SET `amount`=? WHERE `id`=?");
+        ps.setString(1, Double.toString(oldAmount));
+        ps.setInt(2, id);
+        ps.execute();
+        return true;
+    }
+
+    public static boolean addCost(int id, String cost) throws Exception {
+        PreparedStatement ps = db.get.Prepare("UPDATE `products` SET `buy_cost`=? WHERE `id`=?");
+        ps.setString(1, cost);
+        ps.setInt(2, id);
+        ps.execute();
+        return true;
+    }
+
+    public static boolean removeAmount(int id, String amount) throws Exception {
+        double oldAmount = Double.parseDouble(db.get.getTableData("SELECT `amount` FROM `products` WHERE `id`='" + id + "'").getValueAt(0, 0).toString());
+        if (oldAmount < Double.parseDouble(amount)) {
+            throw new Exception("الكمية المحذوفة غير موجود بالمحل");
+        } else {
+            oldAmount -= Double.parseDouble(amount);
+        }
+        PreparedStatement ps = db.get.Prepare("UPDATE `products` SET `amount`=? WHERE `id`=?");
+        ps.setString(1, Double.toString(oldAmount));
+        ps.setInt(2, id);
+        ps.execute();
+        return true;
+    }
+
     public boolean Delete() throws Exception {
         PreparedStatement ps = db.get.Prepare("DELETE FROM `products` WHERE `id`=?");
         ps.setInt(1, id);

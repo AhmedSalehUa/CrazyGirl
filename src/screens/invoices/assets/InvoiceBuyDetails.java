@@ -29,7 +29,7 @@ public class InvoiceBuyDetails {
     ComboBox products;
     TextField amount;
     TextField cost;
-
+TextField totalcost;
     InvoicesScreenBuyController pa;
 
     String product;
@@ -108,7 +108,7 @@ public class InvoiceBuyDetails {
         this.cost = new TextField(cost);
     }
 
-    public InvoiceBuyDetails(int id, ObservableList<Products> data, String selectedpro, String amount, String cost, InvoicesScreenBuyController aThis) {
+    public InvoiceBuyDetails(int id, ObservableList<Products> data, String selectedpro, String amount, String cost, String totalCostString) {
         this.id = id;
         this.products = new ComboBox(data);
         products.setConverter(new StringConverter<Products>() {
@@ -169,8 +169,8 @@ public class InvoiceBuyDetails {
             }
         });
         this.amount = new TextField(amount);
-        this.cost = new TextField(cost);
-        this.pa = aThis;
+        this.cost = new TextField(cost); 
+        this.totalCostString = totalCostString;
     }
 
     public InvoicesScreenBuyController getPa() {
@@ -255,10 +255,11 @@ public class InvoiceBuyDetails {
 
     public static ObservableList<InvoiceBuyDetails> getData(int id) throws Exception {
         ObservableList<InvoiceBuyDetails> data = FXCollections.observableArrayList();
-        ResultSet rs = db.get.getReportCon().createStatement().executeQuery("SELECT `invoice_buy_details`.`id`,`products`.`name`, `sl_offers_details`.`amount`, `sl_offers_details`.`cost` FROM `invoice_buy_details`,`products` WHERE `products`.`id` =`invoice_buy_details`.`product_id` AND `invoice_buy_details`.`invoice_id`='" + id + "'");
+        ObservableList<Products> data1 = Products.getData();
+        ResultSet rs = db.get.getReportCon().createStatement().executeQuery("SELECT `invoice_buy_details`.`id`,`products`.`name`, `invoice_buy_details`.`amount`, `invoice_buy_details`.`cost`,cast(`invoice_buy_details`.`amount` as UNSIGNED) * cast(`invoice_buy_details`.`cost` as UNSIGNED) as 'total' FROM `invoice_buy_details`,`products` WHERE `products`.`id` =`invoice_buy_details`.`product_id` AND `invoice_buy_details`.`invoice_id`='" + id + "'");
         while (rs.next()) {
-            data.add(new InvoiceBuyDetails(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
+            data.add(new InvoiceBuyDetails(rs.getInt(1),data1, rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
         }
         return data;
-    }
+    } 
 }

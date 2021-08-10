@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import screens.accounts.assets.ProvidersAccounts;
 import screens.products.assets.Products;
 
 /**
@@ -152,8 +153,22 @@ public class InvoiceBuy {
             ps.setString(4, a.getAmount().getText());
             ps.setString(5, Integer.toString(Integer.parseInt(a.getAmount().getText()) * Integer.parseInt(a.getCost().getText())));
             ps.addBatch();
+            Products.addAmount(b.getId(), a.getAmount().getText());
+            Products.addCost(b.getId(), a.getCost().getText());
         }
         ps.executeBatch();
+        return true;
+    }
+
+    public boolean AddToAccounts() throws Exception {
+        ProvidersAccounts pr = new ProvidersAccounts();
+        pr.setAmount(total_cost);
+        pr.setDate(date);
+        pr.setType("مستحق");
+        pr.setInvoice_id(id);
+        pr.setAcc_id(0);
+        pr.setProvider_id(provider_id);
+        pr.Add();
         return true;
     }
 
@@ -169,6 +184,7 @@ public class InvoiceBuy {
         ps.setString(8, notes);
         ps.execute();
         AddDetails();
+        AddToAccounts();
         return true;
     }
 
@@ -190,18 +206,23 @@ public class InvoiceBuy {
     }
 
     public boolean DeleteDetails() throws Exception {
-        PreparedStatement ps = db.get.Prepare("DELETE FROM `sl_offers_details` WHERE `offer_id`=?");
+        ObservableList<InvoiceBuyDetails> data = InvoiceBuyDetails.getData(id);
+        for (InvoiceBuyDetails a : data) {
+            Products b = (Products) a.getProducts().getSelectionModel().getSelectedItem();
+            Products.removeAmount(b.getId(), a.getAmount().getText());
+        }
+        PreparedStatement ps = db.get.Prepare("DELETE FROM `invoice_buy_details` WHERE `invoice_id`=?");
         ps.setInt(1, id);
         ps.execute();
         return true;
     }
 
     public boolean Delete() throws Exception {
-        PreparedStatement ps = db.get.Prepare("DELETE FROM `sl_offers` WHERE `id`=?");
+        PreparedStatement ps = db.get.Prepare("DELETE FROM `invoice_buy` WHERE `id`=?");
         ps.setInt(1, id);
 
         DeleteDetails();
-
+        ProvidersAccounts.rollback(id);
         ps.execute();
         return true;
     }
@@ -215,6 +236,23 @@ public class InvoiceBuy {
         return data;
     }
 
+    public static ObservableList<InvoiceBuy> getData(int id) throws Exception {
+        ObservableList<InvoiceBuy> data = FXCollections.observableArrayList();
+        ResultSet rs = db.get.getReportCon().createStatement().executeQuery("SELECT `invoice_buy`.`id`,`providers`.`name`, `invoice_buy`.`date`, `invoice_buy`.`cost`, `invoice_buy`.`discount`, `invoice_buy`.`discount_percent`,`invoice_buy`.`total`,`invoice_buy`.`note` FROM `invoice_buy`,`providers` WHERE `providers`.`id` =`invoice_buy`.`provider_id` AND `invoice_buy`.`id`='" + id + "'");
+        while (rs.next()) {
+            data.add(new InvoiceBuy(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+        }
+        return data;
+    }
+
+    public static ObservableList<InvoiceBuy> getDataForProvider(int id) throws Exception {
+        ObservableList<InvoiceBuy> data = FXCollections.observableArrayList();
+        ResultSet rs = db.get.getReportCon().createStatement().executeQuery("SELECT `invoice_buy`.`id`,`providers`.`name`, `invoice_buy`.`date`, `invoice_buy`.`cost`, `invoice_buy`.`discount`, `invoice_buy`.`discount_percent`,`invoice_buy`.`total`,`invoice_buy`.`note` FROM `invoice_buy`,`providers` WHERE `providers`.`id` =`invoice_buy`.`provider_id` AND `invoice_buy`.`provider_id`='" + id + "'");
+        while (rs.next()) {
+            data.add(new InvoiceBuy(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+        }
+        return data;
+    }
     public static ObservableList<InvoiceBuy> getCutomData(String sql) throws Exception {
         ObservableList<InvoiceBuy> data = FXCollections.observableArrayList();
         ResultSet rs = db.get.getReportCon().createStatement().executeQuery(sql);

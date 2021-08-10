@@ -12,8 +12,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -160,7 +158,7 @@ public class InvoicesScreenBuyController implements Initializable {
         try {
             ObservableList<Products> data = Products.getData();
             ObservableList<InvoiceBuyDetails> list = FXCollections.observableArrayList();
-            list.add(new InvoiceBuyDetails(1, data, "0", "0", "0", InvoicesScreenBuyController.this));
+            list.add(new InvoiceBuyDetails(1, data, "0", "0", "0", "0"));
             invoiceTable.setItems(list);
             invoiceTable.setOnKeyReleased((event) -> {
 
@@ -171,7 +169,7 @@ public class InvoicesScreenBuyController implements Initializable {
                         && !invoiceTable.getSelectionModel().getSelectedItem().getAmount().getText().equals("0")
                         && !invoiceTable.getSelectionModel().getSelectedItem().getCost().getText().equals("0")) {
                     setTotal("");
-                    invoiceTable.getItems().add(new InvoiceBuyDetails(invoiceTable.getItems().size() + 1, data, "0", "0", "0", InvoicesScreenBuyController.this));
+                    invoiceTable.getItems().add(new InvoiceBuyDetails(invoiceTable.getItems().size() + 1, data, "0", "0", "0","0"));
                     invoiceTable.getSelectionModel().clearAndSelect(invoiceTable.getItems().size() - 1);
                 }
 
@@ -193,7 +191,7 @@ public class InvoicesScreenBuyController implements Initializable {
             providers.getSelectionModel().clearSelection();
             ObservableList<Products> data = Products.getData();
             ObservableList<InvoiceBuyDetails> list = FXCollections.observableArrayList();
-            list.add(new InvoiceBuyDetails(1, data, "0", "0", "0", InvoicesScreenBuyController.this));
+            list.add(new InvoiceBuyDetails(1, data, "0", "0", "0","0"));
             invoiceTable.setItems(list);
             invoiceTable.setOnKeyReleased((event) -> {
 
@@ -204,7 +202,7 @@ public class InvoicesScreenBuyController implements Initializable {
                         && !invoiceTable.getSelectionModel().getSelectedItem().getAmount().getText().equals("0")
                         && !invoiceTable.getSelectionModel().getSelectedItem().getCost().getText().equals("0")) {
                     setTotal("");
-                    invoiceTable.getItems().add(new InvoiceBuyDetails(invoiceTable.getItems().size() + 1, data, "0", "0", "0", InvoicesScreenBuyController.this));
+                    invoiceTable.getItems().add(new InvoiceBuyDetails(invoiceTable.getItems().size() + 1, data, "0", "0", "0","0"));
                     invoiceTable.getSelectionModel().clearAndSelect(invoiceTable.getItems().size() - 1);
                 }
 
