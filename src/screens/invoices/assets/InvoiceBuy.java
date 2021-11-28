@@ -21,7 +21,7 @@ public class InvoiceBuy {
 
     int id;
     int provider_id;
-    String provider;
+    String provider; 
     String date;
     String cost;
     String dicount;
