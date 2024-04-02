@@ -94,7 +94,7 @@ public class Products {
     }
 
     public boolean Add() throws Exception {
-        PreparedStatement ps = db.get.Prepare("INSERT INTO `products`(`id`, `name`, `barcode`, `amount`,`buy_cost`, `min_cost`, `cost`) VALUES (?,?,?,?,?,?)");
+        PreparedStatement ps = db.get.Prepare("INSERT INTO `products`(`id`, `name`, `barcode`, `amount`,`buy_cost`, `min_cost`, `cost`) VALUES (?,?,?,?,?,?,?)");
         ps.setInt(1, id);
         ps.setString(2, name);
         ps.setString(3, barcode);

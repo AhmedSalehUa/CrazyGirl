@@ -64,12 +64,13 @@ public class get {
         return con;
     }
     public static boolean canCon() throws Exception {
-        try {
-            setURL();
-            con = DriverManager.getConnection(url, "acapytradeahmedsaleh", "as01203904426");
-            
+       try {
+            if (con == null) {
+                setURL();
+                con = DriverManager.getConnection(url, "acapytradeahmedsaleh", "as01203904426");
+            }
         } catch (SQLException ex) {
-             throw new Exception("Error in connection to database ERROR Code: \n" + ex.getMessage()); 
+            return false;
         }
         return true;
     }

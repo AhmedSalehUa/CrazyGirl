@@ -101,6 +101,7 @@ public class InvoicesScreenBuyController implements Initializable {
                 return LocalDate.parse(dateString, dateTimeFormatter);
             }
         });
+        date.setValue(LocalDate.now());
         progress.setVisible(true);
         Service<Void> service = new Service<Void>() {
             @Override
@@ -163,19 +164,21 @@ public class InvoicesScreenBuyController implements Initializable {
             invoiceTable.setOnKeyReleased((event) -> {
 
                 if (event.getCode() == KeyCode.ENTER) {
-                    setTotal("");
-                }
+
+                   
+                        setTotal("");
+                    } 
                 if (event.getCode() == KeyCode.ENTER && invoiceTable.getSelectionModel().getSelectedItem().getProducts().getSelectionModel().getSelectedIndex() != -1
                         && !invoiceTable.getSelectionModel().getSelectedItem().getAmount().getText().equals("0")
                         && !invoiceTable.getSelectionModel().getSelectedItem().getCost().getText().equals("0")) {
                     setTotal("");
-                    invoiceTable.getItems().add(new InvoiceBuyDetails(invoiceTable.getItems().size() + 1, data, "0", "0", "0","0"));
+                    invoiceTable.getItems().add(new InvoiceBuyDetails(invoiceTable.getItems().size() + 1, data, "0", "0", "0", "0"));
                     invoiceTable.getSelectionModel().clearAndSelect(invoiceTable.getItems().size() - 1);
                 }
 
             });
         } catch (Exception ex) {
-           AlertDialogs.showErrors(ex);
+            AlertDialogs.showErrors(ex);
         }
     }
 
@@ -191,7 +194,7 @@ public class InvoicesScreenBuyController implements Initializable {
             providers.getSelectionModel().clearSelection();
             ObservableList<Products> data = Products.getData();
             ObservableList<InvoiceBuyDetails> list = FXCollections.observableArrayList();
-            list.add(new InvoiceBuyDetails(1, data, "0", "0", "0","0"));
+            list.add(new InvoiceBuyDetails(1, data, "0", "0", "0", "0"));
             invoiceTable.setItems(list);
             invoiceTable.setOnKeyReleased((event) -> {
 
@@ -202,7 +205,7 @@ public class InvoicesScreenBuyController implements Initializable {
                         && !invoiceTable.getSelectionModel().getSelectedItem().getAmount().getText().equals("0")
                         && !invoiceTable.getSelectionModel().getSelectedItem().getCost().getText().equals("0")) {
                     setTotal("");
-                    invoiceTable.getItems().add(new InvoiceBuyDetails(invoiceTable.getItems().size() + 1, data, "0", "0", "0","0"));
+                    invoiceTable.getItems().add(new InvoiceBuyDetails(invoiceTable.getItems().size() + 1, data, "0", "0", "0", "0"));
                     invoiceTable.getSelectionModel().clearAndSelect(invoiceTable.getItems().size() - 1);
                 }
 
@@ -304,7 +307,7 @@ public class InvoicesScreenBuyController implements Initializable {
 
     @FXML
     private void deleteRow(ActionEvent event) {
-         if (invoiceTable.getSelectionModel().getSelectedIndex() == -1) {
+        if (invoiceTable.getSelectionModel().getSelectedIndex() == -1) {
             AlertDialogs.showError("اختار الصف اولا");
         } else {
             if (invoiceTable.getSelectionModel().getSelectedItem().getProducts().getSelectionModel().getSelectedIndex() != -1
@@ -317,36 +320,36 @@ public class InvoicesScreenBuyController implements Initializable {
 
     @FXML
     private void invoiveAdd(ActionEvent event) {
-        
-        progress.setVisible(true);
-        Service<Void> service = new Service<Void>() {
-            boolean ok = true;
-            InvoiceBuy in = new InvoiceBuy();
+        if (date.getValue() == null) {
+            AlertDialogs.showError("برجاء ادخال تاريخ الفاتورة");
+        } else if (providers.getSelectionModel().getSelectedIndex() == -1) {
+            AlertDialogs.showError("برجاء اختيار المورد");
+        } else if (invoiceTable.getItems().isEmpty()) {
+            AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
+        } else if (invoiceTable.getItems().size() == 1 && invoiceTotal.getText().equals("0") || invoiceTotal.getText().equals("0.0")) {
+            AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
+        } else if (invoiceTotal.getText().equals("0")) {
+            setTotal("");
+        } else if (invoiceTable.getItems().size() == 1) {
+            AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
+        } else {
+            progress.setVisible(true);
+            Service<Void> service = new Service<Void>() {
+                boolean ok = true;
+                InvoiceBuy in = new InvoiceBuy();
 
-            @Override
-            protected Task<Void> createTask() {
-                return new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        final CountDownLatch latch = new CountDownLatch(1);
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    setTotal("");
-                                    if (date.getValue() == null) {
-                                        AlertDialogs.showError("برجاء ادخال تاريخ الفاتورة");
-                                    } else if (providers.getSelectionModel().getSelectedIndex() == -1) {
-                                        AlertDialogs.showError("برجاء اختيار المورد");
-                                    }  else if (invoiceTable.getItems().isEmpty()) {
-                                        AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
-                                    } else if (invoiceTable.getItems().size() == 1 && invoiceTotal.getText().equals("0") || invoiceTotal.getText().equals("0.0")) {
-                                        AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
-                                    } else if (invoiceTotal.getText().equals("0")) {
+                @Override
+                protected Task<Void> createTask() {
+                    return new Task<Void>() {
+                        @Override
+                        protected Void call() throws Exception {
+                            final CountDownLatch latch = new CountDownLatch(1);
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
                                         setTotal("");
-                                    } else if (invoiceTable.getItems().size() == 1) {
-                                        AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
-                                    } else {
+
                                         ObservableList<InvoiceBuyDetails> items = invoiceTable.getItems();
 
                                         if (items.size() - 1 == 0) {
@@ -366,46 +369,46 @@ public class InvoicesScreenBuyController implements Initializable {
                                             items.remove(items.size() - 1);
                                             in.setDetails(items);
 
-
                                             in.Add();
+
                                         }
-                                    }
-                                } catch (Exception ex) {
-                                    AlertDialogs.showErrors(ex);
-                                    ok = false;
-                                    try {
-
-                                        in.Delete();
-                                    } catch (Exception ex1) {
+                                    } catch (Exception ex) {
                                         AlertDialogs.showErrors(ex);
+                                        ok = false;
+                                        try {
+
+                                            in.Delete();
+                                        } catch (Exception ex1) {
+                                            AlertDialogs.showErrors(ex);
+                                        }
+                                    } finally {
+                                        latch.countDown();
                                     }
-                                } finally {
-                                    latch.countDown();
                                 }
-                            }
 
-                        });
-                        latch.await();
+                            });
+                            latch.await();
 
-                        return null;
+                            return null;
+                        }
+                    };
+
+                }
+
+                @Override
+                protected void succeeded() {
+                    progress.setVisible(false);
+                    if (ok) {
+                        clear();
+                        AlertDialogs.showmessage("تم");
                     }
-                };
 
-            }
+                    super.succeeded();
+                }
 
-            @Override
-            protected void succeeded() {
-                progress.setVisible(false);
-                if (ok) {
-                    clear();
-                    AlertDialogs.showmessage("تم");
-                }  
-
-                super.succeeded();
-            }
-
-        };
-        service.start();
+            };
+            service.start();
+        }
     }
 
 }

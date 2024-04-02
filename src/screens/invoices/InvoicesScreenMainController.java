@@ -146,6 +146,7 @@ public class InvoicesScreenMainController implements Initializable {
                 return LocalDate.parse(dateString, dateTimeFormatter);
             }
         });
+      
         progress.setVisible(true);
         Service<Void> service = new Service<Void>() {
             @Override
@@ -183,7 +184,7 @@ public class InvoicesScreenMainController implements Initializable {
             @Override
             protected void succeeded() {
                 progress.setVisible(false);
-
+  date.setValue(LocalDate.now());
                 super.succeeded();
             }
         };
@@ -209,7 +210,23 @@ public class InvoicesScreenMainController implements Initializable {
             invoiceTable.setOnKeyReleased((event) -> {
 
                 if (event.getCode() == KeyCode.ENTER) {
-                    setTotal("");
+                    if (event.getCode() == KeyCode.ENTER) {
+
+                        ObservableList<InvoiceSellDetails> items = invoiceTable.getItems();
+                        boolean found = false;
+                        for (InvoiceSellDetails item : items) {
+                            Products a = (Products) item.getProducts().getSelectionModel().getSelectedItem();
+                            if (Double.parseDouble(item.getAmount().getText()) > Double.parseDouble(a.getAmount())) {
+                                found = true;
+
+                            }
+                        }
+                        if (found) {
+                            AlertDialogs.showError("الكمية المباعة اكبر من الموجودة بالمخزن");
+                        } else {
+                            setTotal("");
+                        }
+                    }
                 }
                 if (event.getCode() == KeyCode.ENTER && invoiceTable.getSelectionModel().getSelectedItem().getProducts().getSelectionModel().getSelectedIndex() != -1
                         && !invoiceTable.getSelectionModel().getSelectedItem().getAmount().getText().equals("0")
@@ -363,36 +380,36 @@ public class InvoicesScreenMainController implements Initializable {
 
     @FXML
     private void invoiveAdd(ActionEvent event) {
+        setTotal("");
+        if (date.getValue() == null) {
+            AlertDialogs.showError("برجاء ادخال تاريخ الفاتورة");
+        } else if (clients.getSelectionModel().getSelectedIndex() == -1) {
+            clients.getSelectionModel().select(0);
+        } else if (invoiceTable.getItems().isEmpty()) {
+            AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
+        } else if (invoiceTable.getItems().size() == 1 && invoiceTotal.getText().equals("0") || invoiceTotal.getText().equals("0.0")) {
+            AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
+        } else if (invoiceTotal.getText().equals("0")) {
+            setTotal("");
+        } else if (invoiceTable.getItems().size() == 1) {
+            AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
+        } else {
+            progress.setVisible(true);
+            Service<Void> service = new Service<Void>() {
+                boolean ok = true;
+                InvoiceSell in = new InvoiceSell();
 
-        progress.setVisible(true);
-        Service<Void> service = new Service<Void>() {
-            boolean ok = true;
-            InvoiceSell in = new InvoiceSell();
+                @Override
+                protected Task<Void> createTask() {
+                    return new Task<Void>() {
+                        @Override
+                        protected Void call() throws Exception {
+                            final CountDownLatch latch = new CountDownLatch(1);
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
 
-            @Override
-            protected Task<Void> createTask() {
-                return new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        final CountDownLatch latch = new CountDownLatch(1);
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    setTotal("");
-                                    if (date.getValue() == null) {
-                                        AlertDialogs.showError("برجاء ادخال تاريخ الفاتورة");
-                                    } else if (clients.getSelectionModel().getSelectedIndex() == -1) {
-                                        AlertDialogs.showError("برجاء اختيار العميل");
-                                    } else if (invoiceTable.getItems().isEmpty()) {
-                                        AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
-                                    } else if (invoiceTable.getItems().size() == 1 && invoiceTotal.getText().equals("0") || invoiceTotal.getText().equals("0.0")) {
-                                        AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
-                                    } else if (invoiceTotal.getText().equals("0")) {
-                                        setTotal("");
-                                    } else if (invoiceTable.getItems().size() == 1) {
-                                        AlertDialogs.showError("لا يجب ان يكون الجدول فارغ");
-                                    } else {
                                         ObservableList<InvoiceSellDetails> items = invoiceTable.getItems();
 
                                         if (items.size() - 1 == 0) {
@@ -416,45 +433,46 @@ public class InvoicesScreenMainController implements Initializable {
                                             in.Add();
 
                                         }
-                                    }
-                                } catch (Exception ex) {
-                                    AlertDialogs.showErrors(ex);
-                                    ok = false;
-                                    try {
 
-                                        in.Delete();
-                                    } catch (Exception ex1) {
+                                    } catch (Exception ex) {
                                         AlertDialogs.showErrors(ex);
+                                        ok = false;
+                                        try {
+
+                                            in.Delete();
+                                        } catch (Exception ex1) {
+                                            AlertDialogs.showErrors(ex);
+                                        }
+                                    } finally {
+                                        latch.countDown();
                                     }
-                                } finally {
-                                    latch.countDown();
                                 }
-                            }
 
-                        });
-                        latch.await();
+                            });
+                            latch.await();
 
-                        return null;
-                    }
-                };
+                            return null;
+                        }
+                    };
 
-            }
-
-            @Override
-            protected void succeeded() {
-                progress.setVisible(false);
-                if (ok) {
-
-                    AlertDialogs.showmessage("تم");
-                    printRecept(Integer.parseInt(id.getText()));
-                    clear();
                 }
 
-                super.succeeded();
-            }
+                @Override
+                protected void succeeded() {
+                    progress.setVisible(false);
+                    if (ok) {
 
-        };
-        service.start();
+                        AlertDialogs.showmessage("تم");
+                        printRecept(Integer.parseInt(id.getText()));
+                        clear();
+                    }
+
+                    super.succeeded();
+                }
+
+            };
+            service.start();
+        }
     }
 
     private void printRecept(int parseInt) {
@@ -468,14 +486,14 @@ public class InvoicesScreenMainController implements Initializable {
             HashMap hash = new HashMap();
             BufferedImage image = ImageIO.read(getClass().getResource("/assets/icons/logo.png"));
             hash.put("logo", image);
-            hash.put("id",Integer.toString( parseInt));
+            hash.put("id", Integer.toString(parseInt));
             hash.put("date", date.getValue().format(format));
             hash.put("name", clients.getSelectionModel().getSelectedItem().getName());
             hash.put("totalNum", Integer.toString(total));
             hash.put("totalCost", invoiceLastTotal.getText());
             hash.put("disc", invoicedisc.getText().isEmpty() ? "0" : invoicedisc.getText());
             hash.put("cost", invoiceTotal.getText());
-            hash.put("notes", notes.getText().isEmpty() ? "لايوجد" : notes.getText());  
+            hash.put("notes", notes.getText().isEmpty() ? "لايوجد" : notes.getText());
             InputStream a = getClass().getResourceAsStream("/screens/invoices/report/invoiceSell.jrxml");
             JasperDesign design = JRXmlLoader.load(a);
             JasperReport jasperreport = JasperCompileManager.compileReport(design);
@@ -484,7 +502,7 @@ public class InvoicesScreenMainController implements Initializable {
         } catch (Exception ex) {
             AlertDialogs.showErrors(ex);
         }
- 
+
     }
 
     private void configDrawer() {

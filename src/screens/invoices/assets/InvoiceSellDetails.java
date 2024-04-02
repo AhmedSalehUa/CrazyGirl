@@ -109,12 +109,17 @@ public class InvoiceSellDetails {
         this.cost = new TextField(cost);
     }
 
-    public InvoiceSellDetails(int id, ObservableList<Products> data, String selectedpro, String amount, String cost, String totalCostString) {
+    public InvoiceSellDetails(int id, ObservableList<Products> data, String selectedpro, String amountString, String costString, String totalCostString) {
         this.id = id;
         this.products = new ComboBox(data);
+          this.amount = new TextField(amountString);
+        this.cost = new TextField(costString);
+        this.totalCostString = totalCostString;
         products.setConverter(new StringConverter<Products>() {
             @Override
             public String toString(Products contract) {
+               cost.setText(contract.getCost()); 
+                amount.setText("1"); 
                 return contract.getName();
             }
 
@@ -169,9 +174,7 @@ public class InvoiceSellDetails {
                 }
             }
         });
-        this.amount = new TextField(amount);
-        this.cost = new TextField(cost);
-        this.totalCostString = totalCostString;
+      
     }
 
     public InvoicesScreenMainController getPa() {
